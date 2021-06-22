@@ -1,0 +1,99 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  background-color: #f7f7f7;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+
+.column {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.thegreatesttext {
+  width: 244px;
+  color: #707070;
+  text-align: center;
+  font: italic normal bold 65px/70px Helvetica Neue;
+}
+
+.green {
+  width: 144px;
+  height: 39px;
+  border-radius: 100px;
+  background-color: #b5c401;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.span {
+  font: italic normal bold 22px/85px Helvetica Neue;
+  color: white;
+}
+
+.lottery {
+  font: italic normal bold 83px/85px Helvetica Neue;
+  color: #707070;
+}
+
+.authentication {
+  font: italic normal bold 35px/70px Helvetica Neue;
+  color: #707070;
+}
+
+.card {
+  width: 352px;
+  height: auto;
+  border-radius: 14px;
+  border: 1px solid #dddddd;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 3px 25px #00000014;
+}
+
+.card input {
+  border: none;
+  border-bottom: 2px solid #ebebeb;
+  border-radius: 14px 14px 0px 0px;
+  height: 90px;
+  font-size: 17px;
+  padding-left: 30px;
+  color: #9d9d9d;
+}
+
+.card input:focus {
+  outline: none;
+}
+
+.forgot {
+  font: italic normal normal 17px/70px Helvetica Neue;
+  color: #c1c1c1;
+  text-align: right;
+  margin-right: 20px;
+  text-decoration: none;
+}
+
+::placeholder {
+  color: #9d9d9d;
+}
+
+.logintext {
+  font: italic normal bold 35px/70px Helvetica Neue;
+  color: #b5c401;
+  text-align: center;
+  margin-bottom: 40px;
+}
