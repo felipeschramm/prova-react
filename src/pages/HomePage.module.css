@@ -1,0 +1,91 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  background-color: #f7f7f7;
+  height: 100vh;
+}
+
+.tgl {
+  font: italic normal bold 44px Helvetica Neue;
+  color: #707070;
+  margin-top: 15px;
+}
+
+.containerHeader {
+  width: 80%;
+  height: 75.5px;
+  border-bottom: 2px solid #ebebeb;
+  padding-left: 10%;
+  padding-right: 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menuHeader {
+  margin-left: 50px;
+  font: italic normal bold 20px Helvetica Neue;
+  color: #707070;
+  text-decoration: none;
+}
+
+.bottomTgl {
+  position: absolute;
+  top: 73px;
+  left: 10%;
+  width: 95px;
+  height: 7px;
+  background-color: #b5c401;
+  border-radius: 6px;
+}
+
+.recent {
+  font: italic normal bold 24px/80px Helvetica Neue;
+  color: #707070;
+  margin-right: 45px;
+}
+
+.filters {
+  font: italic normal normal 17px/70px Helvetica Neue;
+  color: #868686;
+  margin-right: 15px;
+}
+
+.buttonType {
+  width: 113px;
+  height: 34px;
+  border-radius: 100px;
+  border: 2px solid #7f3992;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  color: #7f3992;
+  margin-right: 25px;
+  font: italic normal bold 14px/70px Helvetica Neue;
+}
+
+.newBet {
+  font: italic normal bold 24px Helvetica Neue;
+  color: #b5c401;
+}
+
+.numbersBet {
+  font: italic normal bold 20px Helvetica Neue;
+  color: #868686;
+  margin-bottom: 15px;
+}
+
+.infoBet {
+  font: normal normal normal 17px Helvetica Neue;
+  color: #868686;
+  margin-bottom: 11px;
+}
+
+.nameBet {
+  font: italic normal bold 20px Helvetica Neue;
+  color: #7f3992;
+}
