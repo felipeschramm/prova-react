@@ -16,13 +16,28 @@ import cart from "../../assets/emptyCart.png";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
-  BottomButtonsRow,ButtonsTypeRow,BetContainer,
-  CartContainer,CartTitle,ChooseAGameText,
-  Column1,Column2,Container,
-  Description,DivBettingNumbers,ForText,
-  NewBetText,TotalQttText,DivCartFromStore,
-  DivRowTotal,LabelCartText,BottomButton,
-  SaveButton,AddButton,SpanTotal, DivFooter
+  BottomButtonsRow,
+  ButtonsTypeRow,
+  BetContainer,
+  CartContainer,
+  CartTitle,
+  ChooseAGameText,
+  Column1,
+  Column2,
+  Container,
+  Description,
+  DivBettingNumbers,
+  ForText,
+  NewBetText,
+  TotalQttText,
+  DivCartFromStore,
+  DivRowTotal,
+  LabelCartText,
+  BottomButton,
+  SaveButton,
+  AddButton,
+  SpanTotal,
+  DivFooter,
 } from "./styles";
 import axios from "axios";
 
@@ -39,6 +54,7 @@ type game = {
 const NewBetPage: React.FC = () => {
   const history = useHistory();
   const cartFromStore = useSelector((state: RootState) => state.cart);
+  const token = useSelector((state: RootState) => state.user.token);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalQty, setTotalQty] = useState(0);
 
@@ -121,21 +137,33 @@ const NewBetPage: React.FC = () => {
     setNumbersSelected([...numbersSelect]);
   };
 
+  const formatNumbers = (numbers: Array<number>) => {
+    let resp = "";
+    numbers.forEach(function (number, index) {
+      if (index !== numbers.length - 1) resp += number + ", ";
+      else resp += number;
+    });
+    return resp;
+  };
+
   const addToCart = () => {
     const left = game["max-number"] - numbersSelected.length;
     if (numbersSelected.length !== game["max-number"]) {
       if (left === 1) return toast.info("Select " + left + " more number");
       return toast.info("Select " + left + " more numbers");
     }
+    const formattedNumbers = formatNumbers(
+      numbersSelected.sort((a, b) => a - b)
+    );
     dispatch(
       addGame({
         index: new Date().toString(),
+        numbers: formattedNumbers,
         date: moment().format("DD/MM/yyyy"),
-        numbers: numbersSelected.sort((a, b) => a - b),
         price: Number(game.price.toFixed(2)),
         type: game.type,
         color: game.color,
-        max: game["max-number"],
+        "max-number": game["max-number"],
       })
     );
     setTotalQty((prevState) => prevState + 1);
@@ -146,6 +174,31 @@ const NewBetPage: React.FC = () => {
   const saveHandler = () => {
     if (totalPrice >= 30) {
       dispatch(saveGame(cartFromStore));
+      cartFromStore.map(async (item) => {
+        await axios
+          .post(
+            "http://localhost:3333/bet",
+            {
+              index: item.index,
+              numbers: item.numbers,
+              date: item.date,
+              type: item.type,
+              price: item.price,
+              color: item.color,
+              "max-number": item["max-number"],
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then(() => {})
+          .catch((err) => {
+            return toast.error("Failed to save bets");
+          });
+      });
+      dispatch(clear());
       history.replace("/");
     } else {
       toast.info(
@@ -281,8 +334,7 @@ const NewBetPage: React.FC = () => {
             </DivCartFromStore>
             <DivRowTotal>
               <LabelCartText>CART</LabelCartText>
-              <SpanTotal
-              >
+              <SpanTotal>
                 TOTAL: {totalPrice.toFixed(2).replace(".", ",")}
               </SpanTotal>
             </DivRowTotal>
@@ -292,8 +344,7 @@ const NewBetPage: React.FC = () => {
           </SaveButton>
         </Column2>
       </BetContainer>
-      <DivFooter
-      >
+      <DivFooter>
         <p
           style={{
             font: "normal normal normal 15px Helvetica Neue",

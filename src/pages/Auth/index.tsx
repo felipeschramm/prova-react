@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { login } from "../../store/User/userSlice";
+import { login} from "../../store/User/userSlice";
 import Footer from "../../components/Footer";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -30,15 +30,15 @@ const AuthPage: React.FC = () => {
   const history = useHistory();
   const user = useSelector((state: RootState) => state.user);
 
-  const submitHandler = (event: React.FormEvent) => {
+  const submitHandler = async(event: React.FormEvent) => {
     event.preventDefault();
-    axios
+    await axios
       .post("http://localhost:3333/sessions", {
         email: email,
         password: password,
       })
       .then((resp) => {
-        dispatch(login());
+        dispatch(login({token:(resp.data.token).toString()})); 
         history.push("/");
       })
       .catch((err) => {

@@ -8,10 +8,12 @@ const user = createSlice({
     email: "",
     password: "",
     name: "",
+    token: "",
   },
   reducers: {
-    login(state) {
+    login(state, action: PayloadAction<{ token: string }>) {
       state.isAuthenticated = true;
+      state.token = action.payload.token;
     },
     logout(state) {
       state.isAuthenticated = false;
@@ -20,7 +22,6 @@ const user = createSlice({
       state,
       action: PayloadAction<{ email: string; password: string; name: string }>
     ) {
-      console.log(JSON.stringify(action.payload))
       state.email = action.payload.email;
       state.password = action.payload.password;
       state.name = action.payload.name;

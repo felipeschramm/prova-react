@@ -22,17 +22,17 @@ const BetInCart: React.FC<{
     props;
   const dispatch = useDispatch();
 
-  const formatNumbers = (numbers: Array<number>) => {
-    let resp = "";
-    numbers.forEach(function (number, index) {
-      if (index !== numbers.length - 1) resp += number + ", ";
-      else resp += number;
-    });
-    return resp;
-  };
+  // const formatNumbers = (numbers: Array<number>) => {
+  //   let resp = "";
+  //   numbers.forEach(function (number, index) {
+  //     if (index !== numbers.length - 1) resp += number + ", ";
+  //     else resp += number;
+  //   });
+  //   return resp;
+  // };
 
   return (
-    <Container key={game.index}>
+    <Container >
       <FiTrash2
         size={25}
         color={"#888888"}
@@ -43,9 +43,9 @@ const BetInCart: React.FC<{
           onUpdateItemQty(prevStateQty - 1);
         }}
       />
-      <LineColor max={game.max} color={game.color} />
+      <LineColor max={game['max-number']} color={game.color} />
       <div style={{ width: "234px", marginLeft: "5px" }}>
-        <NumbersTextStyle>{formatNumbers(game.numbers)}</NumbersTextStyle>
+        <NumbersTextStyle>{game.numbers}</NumbersTextStyle>
         <TypeTextStyle color={game.color}>{game.type}</TypeTextStyle>
         <PriceText>R$ {game.price.toFixed(2).replace(".", ",")}</PriceText>
       </div>

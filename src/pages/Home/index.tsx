@@ -5,7 +5,7 @@ import ButtonType from "../../components/ButtonType/";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import BetsListItem from "../../components/BetsListItem/";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../../components/Header/";
 import Footer from "../../components/Footer/";
 import {
@@ -20,16 +20,44 @@ import {
   ContainerErrorData,
   DivErrorText,
 } from "./styles";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+
+type game = {
+  index: string;
+  numbers: string;
+  date: string;
+  price: number;
+  type: string;
+  "max-number": number;
+  color: string;
+};
 
 const HomePage: React.FC = () => {
-  const games = useSelector((state: RootState) => state.games);
+  const [gamesFromRequest, setGamesFromRequest] = useState<game[]>();
+  const token = useSelector((state: RootState) => state.user.token);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3333/bets", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((resp) => {
+        setGamesFromRequest(resp.data);
+      })
+      .catch((err) => {
+        return toast.error("Failed to load bets");
+      });
+  }, []);
+  const [filteredGames, setFilteredGames] = useState(gamesFromRequest);
+  // const games = useSelector((state: RootState) => state.games);
   const [type, setType] = useState("");
-  const [filteredGames, setFilteredGames] = useState(games);
 
   function clickButtonHandler(type: string) {
     setType(type);
 
-    const filtGames = games.filter((game) => game.type === type);
+    const filtGames = gamesFromRequest?.filter((game) => game.type === type);
     setFilteredGames(filtGames);
   }
 
@@ -68,11 +96,11 @@ const HomePage: React.FC = () => {
 
       <DivBets>
         {type &&
-          filteredGames.length !== 0 &&
-          filteredGames.map((game) => (
+          filteredGames?.length !== 0 &&
+          filteredGames?.map((game) => (
             <BetsListItem game={game} key={game.index} />
           ))}
-        {!type && games.length === 0 && (
+        {!type && gamesFromRequest?.length === 0 && (
           <ContainerErrorData>
             <DivErrorText>
               <FiXCircle size={20} color="#FF9494" />
@@ -82,7 +110,7 @@ const HomePage: React.FC = () => {
             </DivErrorText>
           </ContainerErrorData>
         )}
-        {type && filteredGames.length === 0 && (
+        {type && filteredGames?.length === 0 && (
           <ContainerErrorData>
             <DivErrorText>
               <FiXCircle size={20} color="#FF9494" />
@@ -91,9 +119,12 @@ const HomePage: React.FC = () => {
           </ContainerErrorData>
         )}
         {!type &&
-          games.length !== 0 &&
-          games.map((game) => <BetsListItem game={game} key={game.index} />)}
+          gamesFromRequest?.length !== 0 &&
+          gamesFromRequest?.map((game) => {
+            return <BetsListItem game={game} key={game.index} />;
+          })}
       </DivBets>
+      <ToastContainer />
       <Footer />
     </Container>
   );

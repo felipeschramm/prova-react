@@ -50,9 +50,10 @@ export const DivBets = styled.div`
   width: 60%;
   overflow-y: auto;
   overflow-x: hidden;
-  height: 400px;
+  height: 380px;
   margin-left: 10%;
-  padding-top: 30px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   display: flex;
   flex-direction: column;
   align-items: start;

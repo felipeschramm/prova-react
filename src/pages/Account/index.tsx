@@ -19,31 +19,62 @@ import {
   Container,
 } from "./styles";
 import { toast, ToastContainer } from "react-toastify";
+import { useEffect } from "react";
+import axios from "axios";
 
 const Account = () => {
-  const nameRegistered = useSelector((state: RootState) => state.user.name);
-  const emailRegistered = useSelector((state: RootState) => state.user.email);
-  const passwordRegistered = useSelector(
-    (state: RootState) => state.user.password
-  );
-  const [nameText, setNameText] = useState(nameRegistered);
-  const [emailText, setEmailText] = useState(emailRegistered);
+  const user = useSelector((state: RootState) => state.user);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3333/users", {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      })
+      .then((resp) => {
+        setData(resp.data);
+        setNameText(resp.data.username);
+        setEmailText(resp.data.email);
+        setPasswordText("resp.data.password");
+      })
+      .catch((err) => {
+        console.log("err");
+      });
+  }, []);
+  const [nameText, setNameText] = useState("");
+  const [emailText, setEmailText] = useState("");
+  const [passwordText, setPasswordText] = useState("");
+  const [data, setData] = useState<{
+    username: string;
+    email: string;
+    password: string;
+  }>({ username: '', email: '', password: '' });
   const [typeText, setTypeText] = useState(true);
-  const [passwordText, setPasswordText] = useState(passwordRegistered);
-  const dispatch = useDispatch();
 
   const sendLinkHandler = () => {
-    if (
-      emailText !== emailRegistered ||
-      nameText !== nameRegistered ||
-      passwordText !== passwordRegistered
-    ) {
-      dispatch(
-        register({ email: emailText, name: nameText, password: passwordText })
-      );
-      toast.success("Updated");
+    if (emailText !== data.email || nameText !== data.username) {
+      axios
+        .put(
+          "http://localhost:3333/users",
+          {
+            username: nameText,
+            email: emailText,
+            password:'' ,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        )
+        .then(() => {
+          toast.success("Updated");
+        })
+        .catch((err) => {
+          return toast.error("Failed to update user");
+        });
     } else {
-      toast.error("Not updated");
+      toast.error("Not updated. Fields did not changed");
     }
   };
 
@@ -100,10 +131,10 @@ const Account = () => {
                 position: "absolute",
                 marginTop: "170px",
                 marginLeft: "300px",
-                cursor:'pointer'
+                cursor: "pointer",
               }}
               onClick={() => {
-                setTypeText((prevState:boolean)=>!prevState);
+                setTypeText((prevState: boolean) => !prevState);
               }}
             />
           </Card>

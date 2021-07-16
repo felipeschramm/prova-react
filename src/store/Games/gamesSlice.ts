@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface Game {
-  index: string;
-  numbers: Array<number>;
+  index:string,
+  numbers: string;
   date: string;
   price: number;
   type: string;
-  max: number;
+  'max-number': number;
   color: string;
 }
 
