@@ -1,6 +1,4 @@
 import { FiArrowRight, FiXCircle } from "react-icons/fi";
-import { Link } from "react-router-dom";
-import api from "../../services/games.json";
 import ButtonType from "../../components/ButtonType/";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -36,6 +34,19 @@ type game = {
 const HomePage: React.FC = () => {
   const [gamesFromRequest, setGamesFromRequest] = useState<game[]>();
   const token = useSelector((state: RootState) => state.user.token);
+  const [typesGames, setTypesGames] = useState<game[]>();
+  useEffect(() => {
+    axios
+      .get("http://localhost:3333/games", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((resp) => {
+        setTypesGames(resp.data);
+      });
+  }, []);
+
   useEffect(() => {
     axios
       .get("http://localhost:3333/bets", {
@@ -69,7 +80,7 @@ const HomePage: React.FC = () => {
         <ContainerData>
           <Recent>Recent Games</Recent>
           <Filters>Filters</Filters>
-          {api.types.map((game, index) => {
+          {typesGames?.map((game, index) => {
             return (
               <ButtonType
                 key={index}

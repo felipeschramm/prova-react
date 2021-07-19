@@ -7,7 +7,7 @@ export const Container = styled.div`
 
 export const Column = styled.div`
   width: 50%;
-  height: 550px;
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -88,4 +88,18 @@ export const SendText = styled.button`
 export const InputText = styled.input`
   font: italic normal bold 17px Helvetica Neue;
   color: #9d9d9d;
+`;
+
+export const SendToken = styled.a`
+  cursor: pointer;
+  position: absolute;
+  top: 230px;
+  right: 140px;
+  color:  white;
+  background-color: #b5c401;
+  border-radius: 15px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

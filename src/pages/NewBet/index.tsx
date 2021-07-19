@@ -1,7 +1,6 @@
-import api from "../../services/games.json";
 import ButtonType from "../../components/ButtonType/";
 import { Game } from "../../store/Games/gamesSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BettingNumbers from "../../components/BettingNumbers/";
 import { FiShoppingCart, FiArrowRight } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
@@ -71,11 +70,23 @@ const NewBetPage: React.FC = () => {
   });
   const [numbersSelected, setNumbersSelected] = useState<number[]>([]);
   const numbersSelect: Array<number> = numbersSelected;
+  const [typesGames, setTypesGames] = useState<game[]>();
+  useEffect(() => {
+    axios
+      .get("http://localhost:3333/games", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((resp) => {
+        setTypesGames(resp.data);
+      });
+  }, []);
 
   function defineType(type: string) {
     setType(type);
 
-    api.types.forEach((game) => {
+    typesGames?.forEach((game) => {
       if (game.type === type) {
         setGame(game);
       }
@@ -171,7 +182,19 @@ const NewBetPage: React.FC = () => {
     setNumbersSelected([]);
   };
 
-  const saveHandler = () => {
+  const sendEmail = async() => {
+    await axios
+      .get("http://localhost:3333/send", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((resp) => {
+        console.log(resp.data);
+      });
+  };
+
+  const saveHandler = async () => {
     if (totalPrice >= 30) {
       dispatch(saveGame(cartFromStore));
       cartFromStore.map(async (item) => {
@@ -193,11 +216,11 @@ const NewBetPage: React.FC = () => {
               },
             }
           )
-          .then(() => {})
           .catch((err) => {
             return toast.error("Failed to save bets");
           });
       });
+      await sendEmail();
       dispatch(clear());
       history.replace("/");
     } else {
@@ -219,7 +242,7 @@ const NewBetPage: React.FC = () => {
           {type && <ForText>{" FOR " + type.toUpperCase()}</ForText>}
           <ChooseAGameText>Choose a game</ChooseAGameText>
           <ButtonsTypeRow>
-            {api.types.map((game, index) => {
+            {typesGames?.map((game, index) => {
               return (
                 <ButtonType
                   key={index}

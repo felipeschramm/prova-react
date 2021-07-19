@@ -1,11 +1,9 @@
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { FiArrowRight, FiEye } from "react-icons/fi";
+import { FiArrowLeft, FiArrowRight, FiEye, FiMail } from "react-icons/fi";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { useDispatch } from "react-redux";
-import { register } from "../../store/User/userSlice";
 import {
   Authentication,
   TheGreatestText,
@@ -17,13 +15,16 @@ import {
   InputText,
   Column,
   Container,
+  SendToken,
 } from "./styles";
 import { toast, ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 import axios from "axios";
+import Loader from "react-loader-spinner";
 
 const Account = () => {
   const user = useSelector((state: RootState) => state.user);
+  const [password, setPassword] = useState("");
   useEffect(() => {
     axios
       .get("http://localhost:3333/users", {
@@ -35,7 +36,7 @@ const Account = () => {
         setData(resp.data);
         setNameText(resp.data.username);
         setEmailText(resp.data.email);
-        setPasswordText("resp.data.password");
+        setPassword(resp.data.password);
       })
       .catch((err) => {
         console.log("err");
@@ -44,22 +45,24 @@ const Account = () => {
   const [nameText, setNameText] = useState("");
   const [emailText, setEmailText] = useState("");
   const [passwordText, setPasswordText] = useState("");
+  const [tokenText, setTokenText] = useState("");
   const [data, setData] = useState<{
     username: string;
     email: string;
     password: string;
-  }>({ username: '', email: '', password: '' });
+  }>({ username: "", email: "", password: "" });
+  const [showCard, setShowCard] = useState(true);
   const [typeText, setTypeText] = useState(true);
 
-  const sendLinkHandler = () => {
+  const sendLinkHandler = async () => {
     if (emailText !== data.email || nameText !== data.username) {
-      axios
+      await axios
         .put(
           "http://localhost:3333/users",
           {
             username: nameText,
             email: emailText,
-            password:'' ,
+            password: password,
           },
           {
             headers: {
@@ -78,6 +81,38 @@ const Account = () => {
     }
   };
 
+  const sendEmailHandler = () => {
+    axios
+      .post("http://localhost:3333/reset", {
+        email: emailText,
+        redirect_url: "http://localhost:3000/resetPassword",
+      })
+      .then(() => {
+        toast.success("A token was sent to your email");
+      })
+      .catch((err) => {
+        return toast.error("Try again");
+      });
+    setShowCard(false);
+  };
+
+  const updatePasswordHandler = () => {
+    axios
+      .put("http://localhost:3333/reset", {
+        token: tokenText,
+        password: passwordText,
+      })
+      .then(() => {
+        setTokenText("");
+        setPasswordText("");
+        toast.success("Password updated");
+        setShowCard(true);
+      })
+      .catch((err) => {
+        return toast.error("Try again");
+      });
+  };
+
   return (
     <Container>
       <Header />
@@ -92,52 +127,96 @@ const Account = () => {
           <Lottery>LOTTERY</Lottery>
         </Column>
 
-        <Column>
+        <Column style={{ paddingRight: "5%" }}>
           <Authentication>Update Data</Authentication>
 
-          <Card>
-            <InputText
-              placeholder="Name"
-              type="text"
-              required
-              value={nameText}
-              onChange={(input) => setNameText(input.target.value)}
-            />
-            <InputText
-              placeholder="Email"
-              type="email"
-              required
-              value={emailText}
-              onChange={(input) => setEmailText(input.target.value)}
-            />
-            <InputText
-              placeholder="Password"
-              type={typeText ? "password" : "some"}
-              required
-              value={passwordText}
-              onChange={(input) => setPasswordText(input.target.value)}
-            />
-            <SendText
-              onClick={sendLinkHandler}
-              style={{ textDecoration: "none" }}
-            >
-              Update <FiArrowRight size={30} style={{ marginLeft: "10px" }} />
-            </SendText>
-            <FiEye
-              color="9d9d9d"
-              style={{
-                width: "30px",
-                height: "30px",
-                position: "absolute",
-                marginTop: "170px",
-                marginLeft: "300px",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                setTypeText((prevState: boolean) => !prevState);
-              }}
-            />
-          </Card>
+          {showCard && (
+            <>
+              <Card>
+                <InputText
+                  placeholder="Name"
+                  type="text"
+                  required
+                  value={nameText}
+                  onChange={(input) => setNameText(input.target.value)}
+                />
+                <SendText
+                  onClick={sendLinkHandler}
+                  style={{ textDecoration: "none" }}
+                >
+                  Send <FiArrowRight size={30} style={{ marginLeft: "10px" }} />
+                </SendText>
+              </Card>
+              <Authentication
+                style={{
+                  marginTop: "-1px",
+                  fontSize: "25px",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setShowCard(false);
+                }}
+              >
+                Update password{" "}
+                <FiArrowRight size={30} style={{ marginLeft: "5px" }} />
+              </Authentication>
+            </>
+          )}
+
+          {!showCard && (
+            <>
+              <Card>
+                <InputText
+                  placeholder="token"
+                  type="text"
+                  required
+                  value={tokenText}
+                  onChange={(input) => setTokenText(input.target.value)}
+                />
+                <InputText
+                  placeholder="new password"
+                  type={typeText ? "password" : "some"}
+                  required
+                  value={passwordText}
+                  onChange={(input) => setPasswordText(input.target.value)}
+                />
+                <FiEye
+                  color="9d9d9d"
+                  style={{
+                    width: "30px",
+                    height: "30px",
+                    position: "absolute",
+                    marginTop: "95px",
+                    marginLeft: "300px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setTypeText((prevState: boolean) => !prevState);
+                  }}
+                />
+                <SendText
+                  onClick={updatePasswordHandler}
+                  style={{ textDecoration: "none" }}
+                >
+                  Update{" "}
+                  <FiArrowRight size={30} style={{ marginLeft: "10px" }} />
+                </SendText>
+              </Card>
+              <Authentication
+                style={{ marginTop: "-1px", cursor: "pointer" }}
+                onClick={() => {
+                  setShowCard(true);
+                }}
+              >
+                <FiArrowLeft /> Back
+              </Authentication>
+
+              <SendToken onClick={sendEmailHandler}>
+                Send token{" "}
+                <FiMail color="white" style={{ marginLeft: "5px" }} />
+              </SendToken>
+            </>
+          )}
         </Column>
       </div>
       <ToastContainer />
