@@ -73,7 +73,7 @@ const NewBetPage: React.FC = () => {
   const [typesGames, setTypesGames] = useState<game[]>();
   useEffect(() => {
     axios
-      .get("http://localhost:3333/games", {
+      .get("http://192.168.0.100:3333/games", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -184,7 +184,7 @@ const NewBetPage: React.FC = () => {
 
   const sendEmail = async() => {
     await axios
-      .get("http://localhost:3333/send", {
+      .get("http://192.168.0.100:3333/send", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -200,7 +200,7 @@ const NewBetPage: React.FC = () => {
       cartFromStore.map(async (item) => {
         await axios
           .post(
-            "http://localhost:3333/bet",
+            "http://192.168.0.100:3333/bet",
             {
               index: item.index,
               numbers: item.numbers,

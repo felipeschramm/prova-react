@@ -28,7 +28,7 @@ const ResetPasswordPage: React.FC = () => {
     if (emailText.length !== 0) {
       if (emailRegistered === emailText) {
         await axios
-          .post("http://localhost:3333/reset", {
+          .post("http://192.168.0.100:3333/reset", {
             email: emailText,
             redirect_url: "http://www.meusistema.com/resetar_senha",
           })

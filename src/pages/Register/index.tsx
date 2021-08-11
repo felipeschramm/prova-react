@@ -35,7 +35,7 @@ const RegisterPage: React.FC = () => {
     dispatch(register(dataUser));
 
     axios
-      .post("http://localhost:3333/users", {
+      .post("http://192.168.0.100:3333/users", {
         username: name,
         email: email,
         password: password,

@@ -27,7 +27,7 @@ const Account = () => {
   const [password, setPassword] = useState("");
   useEffect(() => {
     axios
-      .get("http://localhost:3333/users", {
+      .get("http://192.168.0.100:3333/users", {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -58,7 +58,7 @@ const Account = () => {
     if (emailText !== data.email || nameText !== data.username) {
       await axios
         .put(
-          "http://localhost:3333/users",
+          "http://192.168.0.100:3333/users",
           {
             username: nameText,
             email: emailText,
@@ -83,9 +83,9 @@ const Account = () => {
 
   const sendEmailHandler = () => {
     axios
-      .post("http://localhost:3333/reset", {
+      .post("http://192.168.0.100:3333/reset", {
         email: emailText,
-        redirect_url: "http://localhost:3000/resetPassword",
+        redirect_url: "http://192.168.0.100:3000/resetPassword",
       })
       .then(() => {
         toast.success("A token was sent to your email");
@@ -98,7 +98,7 @@ const Account = () => {
 
   const updatePasswordHandler = () => {
     axios
-      .put("http://localhost:3333/reset", {
+      .put("http://192.168.0.100:3333/reset", {
         token: tokenText,
         password: passwordText,
       })

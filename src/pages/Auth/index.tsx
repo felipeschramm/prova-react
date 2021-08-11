@@ -33,7 +33,7 @@ const AuthPage: React.FC = () => {
   const submitHandler = async(event: React.FormEvent) => {
     event.preventDefault();
     await axios
-      .post("http://localhost:3333/sessions", {
+      .post("http://192.168.0.100:3333/sessions", {
         email: email,
         password: password,
       })
